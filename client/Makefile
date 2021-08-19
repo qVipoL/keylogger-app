@@ -1,29 +1,37 @@
-CC :=gcc
-FLAGS :=-g -pthread -Wall
-SRC :=src
-OBJ :=obj
-SRCS :=$(wildcard $(SRC)/*.c)
-OBJS :=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
+CC 			:= gcc
+SHELL		:= /bin/bash
+CFLAGS 		:= -g -Wall -Werror -Wextra
+LDFLAGS 	:=
 
-BIN_DIR := bin
-BIN := $(BIN_DIR)/client
+SRC_DIR 	:= src
+INCLUDE_DIR	:= include
+OUT_DIR		:= out
+BIN_DIR		:= $(OUT_DIR)/bin
+OBJ_DIR 	:= $(OUT_DIR)/obj
+PROGRAM		:= keylogger-client
+TARGET		:= $(BIN_DIR)/$(PROGRAM)
 
-all: dirs $(BIN)
+HEADERS		:= $(wildcard $(INCLUDE_DIR)/*.h)
+SOURCES		:= $(wildcard $(SRC_DIR)/*c)
+OBJECTS 	:= $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SOURCES))
 
-release: FLAGS := -Wall -O2
-release: clean
-release: dirs $(BIN)
+.PHONY: all clean build_env
 
-dirs:
-	mkdir -p $(BIN_DIR)
-	mkdir -p $(OBJ)
+all: build_env $(TARGET)
 
-$(BIN): $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -o $@
+build_env: $(BIN_DIR) $(OBJ_DIR)
 
-# compile project objs
-$(OBJ)/%.o: $(SRC)/%.c
-	$(CC) $(FLAGS) -c $< -o $@
+$(BIN_DIR):
+	mkdir -p $@
+
+$(OBJ_DIR):
+	mkdir -p $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(TARGET): $(OBJECTS)
+	$(CC) $^ $(LDFLAGS) -o $@
 
 clean:
-	$(RM) $(BIN_DIR)/* $(OBJ)/*
+	-rm -rf $(OUT_DIR)

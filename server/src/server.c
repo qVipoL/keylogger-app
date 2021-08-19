@@ -6,14 +6,8 @@
 #define PORT 3040
 #define BUFFER_SIZE 256
 
-#define MY_MAC1 0xff
-#define MY_MAC2 0xff
-#define MY_MAC3 0xff
-#define MY_MAC4 0xff
-#define MY_MAC5 0xff
-
 static ErrorCode parse_ip_header(uint8_t *buffer, int port);
-static ErrorCode parse_udp_header(uint8_t *buffer, int port, size_t data_size, int has_more_frag, int offset);
+static ErrorCode parse_udp_header(uint8_t *buffer, int port, size_t data_size);
 static void print_udp_data(uint8_t *buffer, size_t data_size);
 static ErrorCode server_recieve_packet(int raw_sd, int port);
 
@@ -81,39 +75,24 @@ static ErrorCode parse_ip_header(uint8_t *buffer, int port) {
     memcpy(&ip_header, buffer, sizeof(ip_header));
 
     if (ip_header.ip_p == IPPROTO_UDP) {
-        unsigned short frag_field = ntohs(ip_header.ip_off);
-        int has_more_frag = (frag_field << 2) >> 15;
-        short offset = frag_field << 3;
-        offset = offset >> 3;
-
-        error_code = parse_udp_header(buffer + 20 * sizeof(uint8_t), port, ntohs(ip_header.ip_len) - sizeof(struct udphdr),
-                                      has_more_frag, offset);
+        error_code = parse_udp_header(buffer + sizeof(struct ip), port, ntohs(ip_header.ip_len) - sizeof(struct udphdr));
 
         if (error_code != ERROR_SUCCESS)
             goto cleanup;
-
-        seq_num = offset;
     }
 
 cleanup:
     return error_code;
 }
 
-static ErrorCode parse_udp_header(uint8_t *buffer, int port, size_t data_size, int has_more_frag, int offset) {
+static ErrorCode parse_udp_header(uint8_t *buffer, int port, size_t data_size) {
     ErrorCode error_code = ERROR_SUCCESS;
     struct udphdr udp_header;
     memcpy(&udp_header, buffer, sizeof(udp_header));
 
     if (ntohs(udp_header.uh_dport) == (uint16_t)port) {
-        if (has_more_frag) {
-            printf("2\n");
-            memcpy(out_buf + offset * data_size, buffer + sizeof(struct udphdr), data_size);
-        } else if (seq_num != offset) {
-            printf("3\n");
-            memcpy(out_buf + offset * data_size, buffer + sizeof(struct udphdr), data_size);
-            print_udp_data(out_buf, (offset + 1) * data_size);
-            seq_num = 0;
-        }
+        printf("recieved packet.\n");
+        print_udp_data(buffer + sizeof(struct udphdr), data_size);
     }
 
     return error_code;
@@ -124,4 +103,5 @@ static void print_udp_data(uint8_t *buffer, size_t data_size) {
 
     for (i = 0; i < data_size; i++)
         printf("%c", buffer[i]);
+    printf("\n");
 }

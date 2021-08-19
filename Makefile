@@ -7,5 +7,5 @@ clean:
 	make clean -C server
 
 run:
-	gnome-terminal -- "./server/bin/server" -t "Server"
-	gnome-terminal -- "./client/bin/client" -t "Client"
+	gnome-terminal -- "./server/out/bin/keylogger-server" -t "Server"
+	gnome-terminal -- "sudo ./client/out/bin/keylogger-client" -t "Client"
