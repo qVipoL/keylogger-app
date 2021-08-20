@@ -7,12 +7,9 @@
 #define BUFFER_SIZE 256
 
 static ErrorCode parse_ip_header(uint8_t *buffer, int port);
-static ErrorCode parse_udp_header(uint8_t *buffer, int port, size_t data_size);
-static void print_udp_data(uint8_t *buffer, size_t data_size);
+static ErrorCode parse_udp_header(uint8_t *buffer, int port);
+static void print_udp_data(uint8_t *buffer);
 static ErrorCode server_recieve_packet(int raw_sd, int port);
-
-uint8_t out_buf[1024];
-short seq_num;
 
 ErrorCode server_start() {
     ErrorCode error_code = ERROR_SUCCESS;
@@ -34,7 +31,7 @@ ErrorCode server_start() {
         goto cleanup;
     }
 
-    printf("server started.\n");
+    printf("server started...\n");
     while ((error_code = server_recieve_packet(raw_sd, PORT)) == ERROR_SUCCESS)
         ;
 
@@ -51,7 +48,7 @@ static ErrorCode server_recieve_packet(int raw_sd, int port) {
     uint8_t buffer[BUFFER_SIZE];
     struct ethhdr eth_header;
 
-    memset(buffer, 0, BUFFER_SIZE * sizeof(uint8_t));
+    memset(buffer, 0, BUFFER_SIZE);
 
     if ((data_size = read(raw_sd, buffer, BUFFER_SIZE)) < 0) {
         error_code = ERROR_READ;
@@ -75,7 +72,7 @@ static ErrorCode parse_ip_header(uint8_t *buffer, int port) {
     memcpy(&ip_header, buffer, sizeof(ip_header));
 
     if (ip_header.ip_p == IPPROTO_UDP) {
-        error_code = parse_udp_header(buffer + sizeof(struct ip), port, ntohs(ip_header.ip_len) - sizeof(struct udphdr));
+        error_code = parse_udp_header(buffer + sizeof(struct ip), port);
 
         if (error_code != ERROR_SUCCESS)
             goto cleanup;
@@ -85,23 +82,18 @@ cleanup:
     return error_code;
 }
 
-static ErrorCode parse_udp_header(uint8_t *buffer, int port, size_t data_size) {
+static ErrorCode parse_udp_header(uint8_t *buffer, int port) {
     ErrorCode error_code = ERROR_SUCCESS;
     struct udphdr udp_header;
     memcpy(&udp_header, buffer, sizeof(udp_header));
 
     if (ntohs(udp_header.uh_dport) == (uint16_t)port) {
-        printf("recieved packet.\n");
-        print_udp_data(buffer + sizeof(struct udphdr), data_size);
+        print_udp_data(buffer + sizeof(struct udphdr));
     }
 
     return error_code;
 }
 
-static void print_udp_data(uint8_t *buffer, size_t data_size) {
-    size_t i;
-
-    for (i = 0; i < data_size; i++)
-        printf("%c", buffer[i]);
-    printf("\n");
+static void print_udp_data(uint8_t *buffer) {
+    printf("%s\n", buffer);
 }

@@ -5,12 +5,14 @@
 #include <arpa/inet.h>
 #include <linux/if_ether.h>
 #include <linux/if_packet.h>
+#include <linux/input.h>
 #include <net/ethernet.h>
 #include <net/if.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/udp.h>
+#include <sys/fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/types.h>

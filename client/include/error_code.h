@@ -5,7 +5,9 @@ typedef enum {
     ERROR_SUCCESS = 0,
     ERROR_SOCKET,
     ERROR_SEND,
+    ERROR_OPEN,
     ERROR_CLOSE,
+    ERROR_READ,
     ERROR_INVALID_ARGS
 } ErrorCode;
 
