@@ -62,7 +62,7 @@ cleanup:
 ErrorCode udp_packet_set_udp(udp_packet_t *packet, size_t src_port, size_t dest_port) {
     ErrorCode error_code = ERROR_SUCCESS;
 
-    if (packet == NULL || src_port <= 0 || src_port > 65535 || dest_port <= 0 || dest_port > 65535) {
+    if (packet == NULL || src_port == 0 || dest_port == 0) {
         error_code = ERROR_INVALID_ARGS;
         goto cleanup;
     }

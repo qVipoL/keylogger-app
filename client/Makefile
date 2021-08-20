@@ -2,7 +2,6 @@ CC 			:= gcc
 SHELL		:= /bin/bash
 CFLAGS 		:= -g -Wall -Werror -Wextra
 LDFLAGS 	:=
-
 SRC_DIR 	:= src
 INCLUDE_DIR	:= include
 OUT_DIR		:= out
