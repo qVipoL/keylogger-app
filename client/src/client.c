@@ -1,9 +1,7 @@
 #include "../include/client.h"
 
+#include "../../udp_packet/include/udp_packet.h"
 #include "../include/std_include.h"
-#include "../include/udp_packet.h"
-
-#define DATA_BUFFER_SIZE (PACKET_BUFFER_SIZE - ETH_SIZE - IP_SIZE - UDP_SIZE)
 
 static ErrorCode client_send(logger_client_t *client, uint8_t *packet_buffer, size_t packet_buffer_size);
 
@@ -38,7 +36,7 @@ cleanup:
 }
 
 ErrorCode client_start(logger_client_t *client, uint8_t *src_mac, uint8_t *dest_mac, uint8_t *src_ip, uint8_t *dest_ip,
-                       size_t src_port, size_t dest_port) {
+                       uint16_t src_port, uint16_t dest_port) {
     ErrorCode error_code = ERROR_SUCCESS;
     udp_packet_t packet;
     uint8_t data_buffer[DATA_BUFFER_SIZE];

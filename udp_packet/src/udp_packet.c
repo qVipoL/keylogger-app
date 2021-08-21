@@ -104,3 +104,42 @@ ErrorCode udp_packet_destroy(udp_packet_t *packet) {
 cleanup:
     return error_code;
 }
+
+ErrorCode udp_packet_init_from_buffer(udp_packet_t *packet, uint8_t *packet_buffer, size_t buffer_size) {
+    ErrorCode error_code = ERROR_SUCCESS;
+
+    if (packet == NULL || packet_buffer == NULL || buffer_size == 0) {
+        error_code = ERROR_INVALID_ARGS;
+        goto cleanup;
+    }
+
+    memcpy(packet->packet_buffer, packet_buffer, buffer_size);
+    packet->eth_header = (struct ethhdr *)(packet->packet_buffer);
+    packet->ip_header = (struct iphdr *)(packet->packet_buffer + ETH_SIZE);
+    packet->udp_header = (struct udphdr *)(packet->packet_buffer + ETH_SIZE + IP_SIZE);
+    packet->udp_data = (packet->packet_buffer + ETH_SIZE + IP_SIZE + UDP_SIZE);
+
+cleanup:
+    return error_code;
+}
+
+bool udp_packet_is_mine(udp_packet_t *packet, uint16_t port) {
+    bool is_mine = false;
+
+    if (packet == NULL)
+        return false;
+
+    if (packet->eth_header->h_proto == htons(ETH_P_IP))
+        if (packet->ip_header->protocol == IPPROTO_UDP)
+            if (ntohs(packet->udp_header->uh_dport) == port)
+                is_mine = true;
+
+    return is_mine;
+}
+
+uint8_t *udp_packet_get_data(udp_packet_t *packet) {
+    if (packet == NULL)
+        return NULL;
+
+    return packet->udp_data;
+}

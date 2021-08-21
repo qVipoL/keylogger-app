@@ -1,14 +1,16 @@
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
-typedef enum {
-    ERROR_SUCCESS = 0,
-    ERROR_SOCKET,
-    ERROR_BIND,
-    ERROR_READ,
-    ERROR_INVALID_ARGS
-} ErrorCode;
+#include "../../udp_packet/include/error_code.h"
+#include "std_include.h"
 
-ErrorCode server_start();
+typedef struct server {
+    int raw_sd;
+    struct sockaddr_ll addr;
+} server_t;
+
+ErrorCode server_init(server_t *server, uint8_t interface_idx);
+ErrorCode server_start(server_t *server, uint16_t port);
+ErrorCode server_destroy(server_t *server);
 
 #endif

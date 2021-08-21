@@ -6,6 +6,7 @@ typedef enum {
     ERROR_SOCKET,
     ERROR_SEND,
     ERROR_OPEN,
+    ERROR_BIND,
     ERROR_CLOSE,
     ERROR_READ,
     ERROR_INVALID_ARGS

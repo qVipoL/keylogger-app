@@ -10,6 +10,8 @@
 #define IP_SIZE sizeof(struct iphdr)
 #define UDP_SIZE sizeof(struct udphdr)
 
+#define DATA_BUFFER_SIZE (PACKET_BUFFER_SIZE - ETH_SIZE - IP_SIZE - UDP_SIZE)
+
 #define MAC_SIZE 6
 
 typedef struct udp_packet {
@@ -26,5 +28,9 @@ ErrorCode udp_packet_set_ip(udp_packet_t *packet, uint8_t *src_ip, uint8_t *dest
 ErrorCode udp_packet_set_udp(udp_packet_t *packet, size_t src_port, size_t dest_port);
 ErrorCode udp_packet_set_data(udp_packet_t *packet, uint8_t *data, size_t data_size);
 ErrorCode udp_packet_destroy(udp_packet_t *packet);
+
+ErrorCode udp_packet_init_from_buffer(udp_packet_t *packet, uint8_t *packet_buffer, size_t buffer_size);
+bool udp_packet_is_mine(udp_packet_t *packet, uint16_t port);
+uint8_t *udp_packet_get_data(udp_packet_t *packet);
 
 #endif
