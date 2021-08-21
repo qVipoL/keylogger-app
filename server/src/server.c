@@ -56,6 +56,9 @@ ErrorCode server_start(server_t *server, uint16_t port) {
             printf("%s\n", (char *)udp_packet_get_data(&packet));
     }
 
+    if ((error_code = udp_packet_destroy(&packet)) != ERROR_SUCCESS)
+        goto cleanup;
+
 cleanup:
     return error_code;
 }

