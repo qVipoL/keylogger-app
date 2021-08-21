@@ -29,7 +29,7 @@ ErrorCode udp_packet_set_eth(udp_packet_t *packet, uint8_t *src_mac, uint8_t *de
 
     for (i = 0; i < MAC_SIZE; i++) {
         packet->eth_header->h_source[i] = src_mac[i];
-        packet->eth_header->h_source[i] = dest_mac[i];
+        packet->eth_header->h_dest[i] = dest_mac[i];
     }
 
     packet->eth_header->h_proto = htons(ETH_P_IP);

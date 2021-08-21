@@ -3,7 +3,7 @@
 
 #define NET_INTERFACE_IDX 2
 
-#define SRC_IP "10.0.2.15"
+#define SRC_IP "192.168.1.10"
 #define SRC_PORT 4040
 #define SRC_MAC1 0x08
 #define SRC_MAC2 0x00
@@ -12,14 +12,14 @@
 #define SRC_MAC5 0xda
 #define SRC_MAC6 0x8a
 
-#define DEST_IP "10.0.2.15"
+#define DEST_IP "192.168.1.11"
 #define DEST_PORT 3040
 #define DEST_MAC1 0x08
 #define DEST_MAC2 0x00
 #define DEST_MAC3 0x27
-#define DEST_MAC4 0xc6
-#define DEST_MAC5 0xda
-#define DEST_MAC6 0x8a
+#define DEST_MAC4 0x83
+#define DEST_MAC5 0x54
+#define DEST_MAC6 0x4e
 
 int main() {
     ErrorCode error_code = ERROR_SUCCESS;
