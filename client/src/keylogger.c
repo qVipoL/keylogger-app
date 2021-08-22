@@ -2,8 +2,6 @@
 
 #include "../include/std_include.h"
 
-#define KEY_EVENT_PATH "/dev/input/event0"
-
 #define KEYS_SIZE 112
 #define UK "unknown key"
 
